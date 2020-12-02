@@ -16,17 +16,27 @@ public class Main{
 			String line = in.nextLine();
 			char policy = line.charAt(1);
 			
-			int c = 0;
-			for(int i = 4; i < line.length(); i++){
-				if(line.charAt(i) == policy){
-					c++;
-				}
-			}
-			
-			if(min <= c && max >= c){
+			//if(oldPolicy(min, max, policy, line)){
+			if(newPolicy(min, max, policy, line)){
 				valid++;
 			}
 		}
 		System.out.println("Valid: " + valid);
+	}
+	
+	private static boolean newPolicy(int min, int max, char policy, String line){
+		return (line.charAt(min + 3) == policy) ^ (line.charAt(max + 3) == policy);
+	}
+	
+	@SuppressWarnings("unused")
+	private static boolean oldPolicy(int min, int max, char policy, String line){
+		int c = 0;
+		for(int i = 4; i < line.length(); i++){
+			if(line.charAt(i) == policy){
+				c++;
+			}
+		}
+		
+		return min <= c && max >= c;
 	}
 }
