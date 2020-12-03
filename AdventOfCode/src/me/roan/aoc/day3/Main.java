@@ -16,7 +16,15 @@ public class Main{
 		}
 		
 		
-		silverStar();
+		silverStar(3, 1);
+		
+		System.out.println(
+			silverStar(1, 1) *
+			silverStar(3, 1) *
+			silverStar(5, 1) *
+			silverStar(7, 1) *
+			silverStar(1, 2)
+		);
 	}
 	
 	private static boolean mapIndex(int x, int y){
@@ -29,13 +37,13 @@ public class Main{
 		}
 	}
 	
-	private static void silverStar(){
+	private static long silverStar(int dx, int dy){
 		int x = 0;
 		int y = 0;
 		int trees = 0;
-		while(y + 1 < map.size()){
-			x += 3;
-			y += 1;
+		while(y + dy < map.size()){
+			x += dx;
+			y += dy;
 			System.out.print(x + " | " + y + ": " + map.get(y) + " = ");
 			if(mapIndex(x, y)){
 				System.out.println('#');
@@ -45,5 +53,6 @@ public class Main{
 			}
 		}
 		System.out.println("Trees: " + trees);
+		return trees;
 	}
 }
