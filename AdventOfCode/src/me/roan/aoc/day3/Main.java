@@ -15,7 +15,6 @@ public class Main{
 			map.add(in.nextLine());
 		}
 		
-		
 		silverStar(3, 1);
 		
 		System.out.println(
