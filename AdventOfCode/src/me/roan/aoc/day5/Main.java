@@ -16,6 +16,19 @@ public class Main{
 		}
 		
 		silverStar();
+		goldStar();
+	}
+	
+	private static void goldStar(){
+		boolean[] seats = new boolean[858 + 1];
+		for(String ticket : tickets){
+			seats[computeSeatID(ticket)] = true;
+		}
+		for(int i = 0; i < seats.length - 2; i++){
+			if(seats[i] && !seats[i + 1] && seats[i + 2]){
+				System.out.println("Seat: " + (i + 1));
+			}
+		}
 	}
 	
 	private static void silverStar(){
