@@ -65,7 +65,7 @@ public class Main{
 		for(Bag b : rules.get(bag)){
 			if(b.name.equals("shiny gold")){
 				return true;
-			}if(b.count == 0){
+			}else if(b.count == 0){
 				continue;
 			}else{
 				retVal = retVal || containsGold(b.name);
