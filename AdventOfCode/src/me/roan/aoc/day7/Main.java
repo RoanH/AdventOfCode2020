@@ -25,6 +25,21 @@ public class Main{
 		}
 		
 		silverStar();
+		goldStar();
+	}
+	
+	private static void goldStar(){
+		System.out.println("Count: " + getCount("shiny gold"));
+	}
+	
+	private static int getCount(String bag){
+		int count = 0;
+		for(Bag b : rules.get(bag)){
+			if(b.count != 0){
+				count += b.count + b.count * getCount(b.name);
+			}
+		}
+		return count;
 	}
 	
 	private static void silverStar(){
@@ -50,7 +65,7 @@ public class Main{
 		for(Bag b : rules.get(bag)){
 			if(b.name.equals("shiny gold")){
 				return true;
-			}if(b.count == -1){
+			}if(b.count == 0){
 				continue;
 			}else{
 				retVal = retVal || containsGold(b.name);
@@ -65,7 +80,7 @@ public class Main{
 		
 		private Bag(String count, String name){
 			if(count.equals("no") && name.equals("other")){
-				this.count = - 1;
+				this.count = 0;
 				this.name = "no" + name;
 			}else{
 				this.count = Integer.parseInt(count);
