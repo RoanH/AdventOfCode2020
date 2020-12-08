@@ -19,12 +19,32 @@ public class Main{
 		}
 		
 		silverStar();
+		goldStar();
 	}
 	
-	private static void silverStar(){
+	private static void goldStar(){
+		for(int i = 0; i < instructions.size(); i++){
+			Instruction code = instructions.get(i);
+			if(!code.name.equals("acc")){
+				String old = code.name;
+				code.name = code.name.equals("nop") ? "jmp" : "nop";
+				acc = 0;
+				if(silverStar()){
+					return;
+				}
+				code.name = old;
+			}
+		}
+	}
+	
+	private static boolean silverStar(){
+		boolean normalTermination = false;
 		boolean[] seen = new boolean[700];
 		int idx = 0;
 		while(!seen[idx]){
+			if(normalTermination = idx == instructions.size()){
+				break;
+			}
 			seen[idx] = true;
 			Instruction i = instructions.get(idx);
 			System.out.println(i.name + " " + i.value);
@@ -42,6 +62,7 @@ public class Main{
 			}
 		}
 		System.out.println("acc: " + acc);
+		return normalTermination;
 	}
 	
 	private static class Instruction{
