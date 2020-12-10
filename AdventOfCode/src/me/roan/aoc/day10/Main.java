@@ -16,6 +16,52 @@ public class Main{
 		}
 		
 		silverStar();
+		goldStar();
+	}
+	
+	private static void goldStar(){
+		jolts.sort(null);
+		
+		int[][] next = new int[jolts.size()][3];
+		
+		for(int i = 0; i < jolts.size() - 1; i++){
+			int idx = 0;
+			if(jolts.get(i + 1) - jolts.get(i) <= 3){
+				next[i][idx++] = i + 1;
+			}
+			if(i < jolts.size() - 2 && jolts.get(i + 2) - jolts.get(i) <= 3){
+				next[i][idx++] = i + 2;
+			}
+			if(i < jolts.size() - 3 && jolts.get(i + 3) - jolts.get(i) <= 3){
+				next[i][idx] = i + 3;
+			}
+		}
+		
+		long[] branches = new long[jolts.size()];
+		branches[jolts.size() - 1] = 1;
+		
+		for(int i = jolts.size() - 2; 0 <= i; i--){
+			long val = 0;
+			if(next[i][0] != 0){
+				val += branches[next[i][0]];
+			}
+			if(next[i][1] != 0){
+				val += branches[next[i][1]];
+			}
+			if(next[i][2] != 0){
+				val += branches[next[i][2]];
+			}
+			branches[i] = val;
+		}
+		
+		long total = 0;
+		for(int i = 0; i < jolts.size(); i++){
+			if(jolts.get(i) <= 3){
+				total += branches[i];
+			}
+		}
+		
+		System.out.println("Branches: " + total);
 	}
 	
 	private static void silverStar(){
