@@ -24,6 +24,38 @@ public class Main{
 		}
 		
 		silverStar();
+		goldStar();
+	}
+	
+	public static void goldStar(){
+		char[][] state = new char[original.length][];
+		char[][] next = new char[original.length][original[0].length];
+		for(int i = 0; i < state.length; i++){
+			state[i] = Arrays.copyOf(original[i], original[i].length);
+		}
+		
+		while(!Arrays.deepEquals(state, next)){
+			for(int i = 0; i < state.length; i++){
+				for(int j = 0; j < state[0].length; j++){
+					next[i][j] = nextStateGold(state, i, j);
+				}
+			}
+			
+			char[][] tmp = state;
+			state = next;
+			next = tmp;
+		}
+		
+		int occupied = 0;
+		for(int i = 0; i < state.length; i++){
+			for(int j = 0; j < state[0].length; j++){
+				if(state[i][j] == '#'){
+					occupied++;
+				}
+			}
+		}
+		
+		System.out.println("Occupied: " + occupied);
 	}
 	
 	public static void silverStar(){
@@ -67,6 +99,39 @@ public class Main{
 		}else{
 			return state[i][j];
 		}
+	}
+	
+	private static char nextStateGold(char[][] state, int i, int j){
+		if(state[i][j] == '.'){
+			return '.';
+		}else if(state[i][j] == 'L' && !getVisible(state, i, j).anyMatch(c->c == '#')){
+			return '#';
+		}else if(state[i][j] == '#' && getVisible(state, i, j).filter(c->c == '#').count() >= 5){
+			return 'L';
+		}else{
+			return state[i][j];
+		}
+	}
+	
+	private static Stream<Character> getVisible(char[][] state, int i, int j){
+		return Stream.of(
+			find(state, i, j, -1, -1),
+			find(state, i, j, -1, 0),
+			find(state, i, j, -1, 1),
+			find(state, i, j, 0, -1),
+			find(state, i, j, 0, 1),
+			find(state, i, j, 1, -1),
+			find(state, i, j, 1, 0),
+			find(state, i, j, 1, 1)
+		).filter(Optional::isPresent).map(Optional::get);
+	}
+
+	private static Optional<Character> find(char[][] state, int i, int j, int di, int dj){
+		Optional<Character> seat;
+		do{
+			seat = get(state, i += di, j += dj);
+		}while(seat.filter(c->c == '.').isPresent());
+		return seat;
 	}
 	
 	private static Stream<Character> getAdjacent(char[][] state, int i, int j){
