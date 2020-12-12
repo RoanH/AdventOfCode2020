@@ -16,6 +16,51 @@ public class Main{
 		in.close();
 		
 		silverStar();
+		goldStar();
+	}
+	
+	private static void goldStar(){
+		int x = 0;
+		int y = 0;
+		int dx = 10;
+		int dy = 1;
+		int tmp;
+		
+		for(String instruction : instructions){
+			char code = instruction.charAt(0);
+			int value = Integer.parseInt(instruction.substring(1));
+			
+			switch(code){
+			case 'N':
+				dy += value;
+				break;
+			case 'S':
+				dy -= value;
+				break;
+			case 'E':
+				dx += value;
+				break;
+			case 'W':
+				dx -= value;
+				break;
+			case 'L':
+				tmp = dx * cos(360 - value) + dy * sin(360 - value);
+				dy = dy * cos(360 - value) - dx * sin(360 - value);
+				dx = tmp;
+				break;
+			case 'R':
+				tmp = dx * cos(value) + dy * sin(value);
+				dy = dy * cos(value) - dx * sin(value);
+				dx = tmp;
+				break;
+			case 'F':
+				x += value * dx;
+				y += value * dy;
+				break;
+			}
+		}
+		
+		System.out.println("Gold: " + x + " | " + y + " | " + (Math.abs(x) + Math.abs(y)));
 	}
 	
 	private static void silverStar(){
@@ -59,7 +104,7 @@ public class Main{
 			}
 		}
 		
-		System.out.println(x + " | " + y + " | " + (Math.abs(x) + Math.abs(y)));
+		System.out.println("Silver: " + x + " | " + y + " | " + (Math.abs(x) + Math.abs(y)));
 	}
 	
 	//To avoid any floating point related issues
