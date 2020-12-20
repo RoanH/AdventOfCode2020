@@ -7,10 +7,11 @@ public class Main{
 	private static final int[] input = new int[]{11, 0, 1, 10, 5, 19};
 
 	public static void main(String[] args){
-		silverStar();
+		silverStar(2020);
+		silverStar(30000000);
 	}
 	
-	private static void silverStar(){
+	private static void silverStar(int target){
 		Map<Integer, Integer> last = new HashMap<Integer, Integer>();
 		for(int i = 1; i < input.length; i++){
 			last.put(input[i - 1], i);
@@ -29,8 +30,8 @@ public class Main{
 			}
 			last.put(prev, turn - 1);
 			prev = num;
-		}while(turn != 2020);
+		}while(turn != target);
 		
-		System.out.println("Num 2020 is " + prev);
+		System.out.println("Num " + target + " is " + prev);
 	}
 }
