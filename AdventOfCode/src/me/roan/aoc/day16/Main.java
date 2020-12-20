@@ -2,6 +2,7 @@ package me.roan.aoc.day16;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -28,11 +29,60 @@ public class Main{
 		}
 		
 		silverStar();
+		goldStar();
+	}
+	
+	private static void goldStar(){
+		tickets.add(own);
+		List<List<Field>> options = new ArrayList<List<Field>>(own.length);
+		for(int i = 0; i < own.length; i++){
+			options.add(new ArrayList<Field>());
+			fields: for(Field field : fields){
+				for(int[] ticket : tickets){
+					if(!field.isValid(ticket[i])){
+						continue fields;
+					}
+				}
+				options.get(i).add(field);
+				field.assigned++;
+			}
+		}
+
+		Field[] order = new Field[own.length];
+		while(!fields.isEmpty()){
+			fields.sort(null);
+			
+			Field field = fields.remove(0);
+			if(field.assigned != 1){
+				System.err.println("Multiple assignment options.");
+			}
+			
+			for(int i = 0; i < options.size(); i++){
+				List<Field> set = options.get(i);
+				if(set.remove(field)){
+					set.forEach(f->f.assigned--);
+					set.clear();
+					order[i] = field;
+				}
+			}
+			
+		}
+		
+		long product = 1;
+		for(int i = 0; i < order.length; i++){
+			if(order[i].name.startsWith("departure")){
+				product *= own[i];
+			}
+		}
+		
+		System.out.println("Product: " + product);
 	}
 	
 	private static void silverStar(){
 		int error = 0;
-		for(int[] ticket : tickets){
+		Iterator<int[]> iter = tickets.iterator();
+		while(iter.hasNext()){
+			int[] ticket = iter.next();
 			values: for(int val : ticket){
 				for(Field field : fields){
 					if(field.isValid(val)){
@@ -40,6 +90,7 @@ public class Main{
 					}
 				}
 				error += val;
+				iter.remove();
 			}
 		}
 		System.out.println("Error rate: " + error);
@@ -49,12 +100,13 @@ public class Main{
 		return Arrays.stream(line.split(",")).mapToInt(Integer::parseInt).toArray();
 	}
 	
-	private static class Field{
+	private static class Field implements Comparable<Field>{
 		private String name;
 		private int r0;
 		private int r1;
 		private int r2;
 		private int r3;
+		private int assigned = 0;
 		
 		private Field(String line){
 			String[] args = line.split(": ");
@@ -70,6 +122,11 @@ public class Main{
 		
 		private boolean isValid(int num){
 			return (r0 <= num && num <= r1) || (r2 <= num && num <= r3);
+		}
+
+		@Override
+		public int compareTo(Field o){
+			return Integer.compare(assigned, o.assigned);
 		}
 	}
 }
