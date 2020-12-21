@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main{
@@ -25,6 +26,49 @@ public class Main{
 		}
 		
 		silverStar();
+		goldStar();
+	}
+	
+	private static void goldStar(){
+		//Rule 8 and 11 are only used by rule 0
+		
+		//New 8: 42 | 42 8
+		Pattern rule8 = Pattern.compile("(" + buildRegex(rules.get(42)) + ")+");
+		
+		//New 11: 42 31 | 42 11 31
+		Pattern rule42 = Pattern.compile("^" + buildRegex(rules.get(42)));
+		Pattern rule31 = Pattern.compile(buildRegex(rules.get(31)) + "$");
+		
+		int total = 0;
+		for(String msg : messages){
+			//Match rule 42 and 31 as often as possible but in pairs and abusing
+			//the fact that rule 11 is just a repeat of the start of rule 11
+			boolean found = false;
+			while(true){
+				Matcher m = rule31.matcher(msg);
+				if(m.find()){
+					String str = m.replaceFirst("");
+					m = rule42.matcher(str);
+					if(m.find()){
+						found = true;
+						msg = m.replaceFirst("");
+						continue;
+					}
+				}
+				break;
+			}
+			
+			//We require at least one match of rule 11
+			if(!found){
+				continue;
+			}
+			
+			//Match the remainder against rule 8
+			if(rule8.matcher(msg).matches()){
+				total++;
+			}
+		}
+		System.out.println("Total matches: " + total);
 	}
 	
 	private static void silverStar(){
