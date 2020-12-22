@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -49,6 +50,42 @@ public class Main{
 			}
 		}
 		System.out.println("Safe: " + total);
+		
+		goldStar(contains);
+	}
+	
+	private static void goldStar(Map<String, List<String>> contains){
+		boolean hit;
+		do{
+			hit = false;
+			for(List<String> possible : contains.values()){
+				if(possible.size() == 1){
+					for(List<String> other : contains.values()){
+						if(possible != other){
+							other.remove(possible.get(0));
+						}
+					}
+				}else{
+					hit = true;
+				}
+			}
+		}while(hit);
+		
+		System.out.println("List: " + contains.entrySet().stream().sorted(Main::alphabetical).map(Entry::getValue).flatMap(List::stream).reduce("", (res, e)->{
+			return res.isEmpty() ? e : (res + "," + e);
+		}));
+	}
+	
+	private static int alphabetical(Entry<String, List<String>> ea, Entry<String, List<String>> eb){
+		String a = ea.getKey();
+		String b = eb.getKey();
+		for(int i = 0; i < Math.min(a.length(), b.length()); i++){
+			int eq = Character.compare(a.charAt(i), b.charAt(i));
+			if(eq != 0){
+				return eq;
+			}
+		}
+		return 0;
 	}
 	
 	private static class Food{
