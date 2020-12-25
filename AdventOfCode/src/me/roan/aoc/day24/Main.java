@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Main{
 	private static final List<String> instructions = new ArrayList<String>();
@@ -52,9 +53,27 @@ public class Main{
 				}
 			}
 			current.flipped = !current.flipped;
+			current.next = true;
 		}
 		
 		System.out.println("Flipped: " + ref.tiles.values().stream().map(Map::values).flatMap(Collection::stream).filter(Tile::isFlipped).count());
+	
+		goldStar(ref);
+	}
+	
+	private static void goldStar(Tile ref){
+		for(int i = 0; i < 100; i++){
+			//Put white tile around all flipped tiles
+			ref.tiles.values().stream().map(Map::values).flatMap(Collection::stream).filter(Tile::isFlipped).collect(Collectors.toList()).forEach(Tile::ensureNeighbors);
+			
+			//Compute next state
+			ref.tiles.values().stream().map(Map::values).flatMap(Collection::stream).forEach(Tile::computeNext);
+			
+			//Apply next state
+			ref.tiles.values().stream().map(Map::values).flatMap(Collection::stream).forEach(Tile::applyNext);
+
+			System.out.println("Day " + (i + 1) + ": " + ref.tiles.values().stream().map(Map::values).flatMap(Collection::stream).filter(Tile::isFlipped).count());
+		}
 	}
 	
 	private static class Tile{
@@ -68,12 +87,54 @@ public class Main{
 		private int x;
 		private int y;
 		private boolean flipped = false;
+		private boolean next = false;
 		
 		private Tile(int x, int y, Map<Integer, Map<Integer, Tile>> tiles){
 			this.tiles = tiles;
 			this.x = x;
 			this.y = y;
 			tiles.computeIfAbsent(x, v->new HashMap<Integer, Tile>()).put(y, this);
+		}
+		
+		public void applyNext(){
+			flipped = next;
+		}
+		
+		public void computeNext(){
+			int black = 0;
+			if(e != null && e.flipped){
+				black++;
+			}
+			if(se != null && se.flipped){
+				black++;
+			}
+			if(ne != null && ne.flipped){
+				black++;
+			}
+			if(w != null && w.flipped){
+				black++;
+			}
+			if(sw != null && sw.flipped){
+				black++;
+			}
+			if(nw != null && nw.flipped){
+				black++;
+			}
+			
+			if(flipped){
+				next = !(black == 0 || black > 2);
+			}else{
+				next = black == 2;
+			}
+		}
+		
+		public void ensureNeighbors(){
+			get("e");
+			get("se");
+			get("ne");
+			get("w");
+			get("sw");
+			get("nw");
 		}
 		
 		public boolean isFlipped(){
